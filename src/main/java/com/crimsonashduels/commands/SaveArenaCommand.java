@@ -6,8 +6,13 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.Location;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SaveArenaCommand implements CommandExecutor {
     private final CrimsonAshDuels plugin;
+    private final Map<Player, Location> corner1Selections = new HashMap<>();
+    private final Map<Player, Location> corner2Selections = new HashMap<>();
 
     public SaveArenaCommand(CrimsonAshDuels plugin) {
         this.plugin = plugin;
@@ -19,18 +24,36 @@ public class SaveArenaCommand implements CommandExecutor {
             sender.sendMessage("Only players can save arenas.");
             return true;
         }
+        Player player = (Player) sender;
+
         if (args.length < 1) {
-            sender.sendMessage("Usage: /savearena <name>");
+            player.sendMessage("Usage: /savearena <name>");
             return true;
         }
 
-        Player player = (Player) sender;
-        Location loc = player.getLocation();
-        ArenaResetManager manager = plugin.getArenaResetManager();
+        String arenaName = args[0];
+        Location c1 = corner1Selections.get(player);
+        Location c2 = corner2Selections.get(player);
 
-        // For now, use player location as both corners (expand later with wand tool)
-        manager.saveArena(args[0], loc, loc);
-        player.sendMessage("Arena " + args[0] + " saved.");
+        if (c1 == null || c2 == null) {
+            player.sendMessage("You must set both corners first using /setcorner1 and /setcorner2.");
+            return true;
+        }
+
+        ArenaResetManager manager = plugin.getArenaResetManager();
+        manager.saveArena(arenaName, c1, c2);
+        player.sendMessage("Arena " + arenaName + " saved with defined corners.");
         return true;
+    }
+
+    // Helper commands to set corners
+    public void setCorner1(Player player) {
+        corner1Selections.put(player, player.getLocation());
+        player.sendMessage("Corner 1 set at your current location.");
+    }
+
+    public void setCorner2(Player player) {
+        corner2Selections.put(player, player.getLocation());
+        player.sendMessage("Corner 2 set at your current location.");
     }
 }
