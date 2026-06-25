@@ -1,0 +1,12 @@
+arenas:
+  arena1:
+    world: world
+    corner1: "0,64,0"
+    corner2: "10,70,10"
+    pasteLocation: "5,65,5"
+
+kits:
+  default:
+    items:
+      - "DIAMOND_SWORD"
+      - "IRON_HELMET"
