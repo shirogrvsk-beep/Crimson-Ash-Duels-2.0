@@ -34,6 +34,7 @@ public class DuelAcceptCommand implements CommandExecutor {
             return true;
         }
 
+        // Load arena from config (first arena for now)
         Arena arena = Arena.fromConfig(Bukkit.getPluginManager()
                 .getPlugin("CrimsonAshDuels").getConfig().getConfigurationSection("arenas.arena1"));
 
